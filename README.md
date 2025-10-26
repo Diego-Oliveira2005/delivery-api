@@ -33,5 +33,6 @@ Delivery system developed with Spring Boot & Java 21.
 - Profile: development
 
 ## 👨‍💻 Developer
-Diego Oliveira - Ages 2025 
-Developed with JDK 21 e Spring Boot 3.5.7
+Diego Oliveira - Ages 2025.2
+
+###### Developed with JDK 21 & Spring Boot 3.5.7
