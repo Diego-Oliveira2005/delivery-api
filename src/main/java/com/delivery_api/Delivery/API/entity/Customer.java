@@ -30,6 +30,16 @@ public class Customer {
     @Column(nullable = true)
     private Boolean active;
 
+    @PrePersist
+    protected void onCreate() {
+        if (dateRegister == null) {
+            dateRegister = LocalDateTime.now();
+        }
+        if (active == null) {
+            active = true;
+        }
+    }
+
     public void deactivate() {
         this.active = false;
     }

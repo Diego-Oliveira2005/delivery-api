@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,9 +45,16 @@ public class CustomerService {
     public Customer update(Long id, Customer customerUpdated) {
         Customer customer = searchById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found: " + id));
 
+        if (customer.getActive() != null && !customer.getActive()) {
+            throw new IllegalArgumentException("Cannot update inactive customer");
+        }
+
+        validateCustomerData(customerUpdated);
+
         if (!customer.getEmail().equals(customerUpdated.getEmail())) {
-            customerRepository.existsByEmail(customerUpdated.getEmail());
-            throw new IllegalArgumentException("Email already exists: " +  customerUpdated.getEmail());
+            if (customerRepository.existsByEmail(customerUpdated.getEmail())) {
+                throw new IllegalArgumentException("Email already exists: " +  customerUpdated.getEmail());
+            }
         }
 
         customer.setName(customerUpdated.getName());
@@ -68,7 +74,7 @@ public class CustomerService {
 
     @Transactional(readOnly = true)
     public List<Customer> searchByName(String name) {
-        return new ArrayList<>();
+        return customerRepository.findByNameContainingIgnoreCaseAndActiveTrue(name);
     }
 
     @Transactional(readOnly = true)

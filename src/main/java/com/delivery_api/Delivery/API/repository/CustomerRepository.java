@@ -15,6 +15,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findByActiveTrue();
 
-    List<Customer> findByNameContainingIgnoreCase(String name);
+    List<Customer> findByNameContainingIgnoreCaseAndActiveTrue(String name);
 
 }
