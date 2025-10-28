@@ -14,7 +14,7 @@ CREATE TABLE restaurants (
                               category VARCHAR(50),
                               address VARCHAR(200),
                               phone VARCHAR(20),
-                              delivery_tax DECIMAL(10,2),
+                              delivery_fee DECIMAL(10,2),
                               rating DECIMAL(2,1),
                               active BOOLEAN
 );
