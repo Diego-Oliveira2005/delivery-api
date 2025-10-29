@@ -56,8 +56,4 @@ public class Restaurant {
         return active == null || !active;
     }
 
-    @Deprecated
-    public void deactivate() {
-        goOffline();
-    }
 }

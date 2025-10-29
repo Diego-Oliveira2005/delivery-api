@@ -111,11 +111,6 @@ public class RestaurantService {
         return restaurant.isOnline();
     }
 
-    @Deprecated
-    public void deactivateRestaurant(Long id) {
-        setOffline(id);
-    }
-
     @Transactional(readOnly = true)
     public List<Restaurant> searchByName(String name) {
         return restaurantRepository.findByNameContainingIgnoreCaseAndActiveTrue(name);

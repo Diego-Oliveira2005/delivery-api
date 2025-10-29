@@ -147,22 +147,6 @@ public class RestaurantController {
     }
 
     /*
-        Deactivate Restaurant (legacy - now sets offline)
-     */
-    @Deprecated
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
-        try {
-            restaurantService.setOffline(id);
-            return ResponseEntity.ok().body("Restaurant set to offline");
-        } catch(IllegalArgumentException exception) {
-            return ResponseEntity.badRequest().body("error: " + exception.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
-    }
-
-    /*
         Search Restaurant by name
      */
 
