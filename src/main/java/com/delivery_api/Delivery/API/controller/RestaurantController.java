@@ -36,19 +36,26 @@ public class RestaurantController {
     }
     
     /*
-        List all active Restaurants
+        List all online/open Restaurants
      */
-
     @GetMapping
     public ResponseEntity<List<Restaurant>> listRestaurants() {
-        List<Restaurant> restaurants = restaurantService.listActives();
+        List<Restaurant> restaurants = restaurantService.listOnline();
         return ResponseEntity.ok(restaurants);
     }
-    
+
+    /*
+        List all online Restaurants (explicit)
+     */
+    @GetMapping("/online")
+    public ResponseEntity<List<Restaurant>> listOnlineRestaurants() {
+        List<Restaurant> restaurants = restaurantService.listOnline();
+        return ResponseEntity.ok(restaurants);
+    }
+
     /*
         Search Restaurant by ID
      */
-
     @GetMapping("/{id}")
     public ResponseEntity<?> searchById(@PathVariable Long id) {
         Optional<Restaurant> restaurant = restaurantService.searchById(id);
@@ -75,23 +82,86 @@ public class RestaurantController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
-    
+
     /*
-        Deactivate Restaurant (soft delete)
+        Check if Restaurant is online
      */
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
+    @GetMapping("/{id}/status")
+    public ResponseEntity<?> checkStatus(@PathVariable Long id) {
         try {
-            restaurantService.deactivateRestaurant(id);
-            return ResponseEntity.ok().body("Restaurant deleted successfully");
+            boolean isOnline = restaurantService.isRestaurantOnline(id);
+            return ResponseEntity.ok(java.util.Map.of(
+                    "id", id,
+                    "online", isOnline,
+                    "status", isOnline ? "OPEN" : "CLOSED"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("error: " + e.getMessage());
+        }
+    }
+
+    /*
+        Set Restaurant offline/closed
+     */
+    @PatchMapping("/{id}/offline")
+    public ResponseEntity<?> setRestaurantOffline(@PathVariable Long id) {
+        try {
+            Restaurant restaurant = restaurantService.setOffline(id);
+            return ResponseEntity.ok(restaurant);
         } catch(IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body("error: " + exception.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
-    
+
+    /*
+        Set Restaurant online/open
+     */
+    @PatchMapping("/{id}/online")
+    public ResponseEntity<?> setRestaurantOnline(@PathVariable Long id) {
+        try {
+            Restaurant restaurant = restaurantService.setOnline(id);
+            return ResponseEntity.ok(restaurant);
+        } catch(IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body("error: " + exception.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+    /*
+        Toggle Restaurant status (online ↔ offline)
+     */
+    @PatchMapping("/{id}/toggle")
+    public ResponseEntity<?> toggleRestaurantStatus(@PathVariable Long id) {
+        try {
+            Restaurant restaurant = restaurantService.toggleStatus(id);
+            return ResponseEntity.ok(restaurant);
+        } catch(IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body("error: " + exception.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+    /*
+        Deactivate Restaurant (legacy - now sets offline)
+     */
+    @Deprecated
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
+        try {
+            restaurantService.setOffline(id);
+            return ResponseEntity.ok().body("Restaurant set to offline");
+        } catch(IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body("error: " + exception.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
     /*
         Search Restaurant by name
      */

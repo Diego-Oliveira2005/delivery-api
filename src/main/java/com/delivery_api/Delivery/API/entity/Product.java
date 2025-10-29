@@ -40,4 +40,20 @@ public class Product {
     public void unavailable() {
         this.available = false;
     }
+
+    public void makeAvailable() {
+        this.available = true;
+    }
+
+    public boolean isAvailable() {
+        return available != null && available;
+    }
+
+    public boolean isPriceValid() {
+        return price != null && price > 0;
+    }
+
+    public boolean belongsToRestaurant(Long restaurantId) {
+        return restaurant != null && restaurant.getId().equals(restaurantId);
+    }
 }

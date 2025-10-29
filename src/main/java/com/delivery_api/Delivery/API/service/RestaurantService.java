@@ -26,7 +26,7 @@ public class RestaurantService {
 
         validateRestaurantData(restaurant);
 
-        restaurant.setActive(true);
+        restaurant.setActive(true); // Restaurant starts online/open
 
         return restaurantRepository.save(restaurant);
     }
@@ -37,16 +37,17 @@ public class RestaurantService {
     }
 
     @Transactional(readOnly = true)
+    public List<Restaurant> listOnline() {
+        return restaurantRepository.findByActiveTrue();
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Restaurant> searchById(Long id) {
         return restaurantRepository.findById(id);
     }
 
     public Restaurant update(Long id, Restaurant restaurantUpdated) {
         Restaurant restaurant = searchById(id).orElseThrow(() -> new IllegalArgumentException("restaurant not found: " + id));
-
-        if (restaurant.getActive() != null && !restaurant.getActive()) {
-            throw new IllegalArgumentException("Cannot update inactive restaurant");
-        }
 
         validateRestaurantData(restaurantUpdated);
 
@@ -66,11 +67,53 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
-    public void deactivateRestaurant(Long id) {
+    /*
+        Set restaurant as offline/closed
+     */
+    public Restaurant setOffline(Long id) {
         Restaurant restaurant = searchById(id).orElseThrow(() -> new IllegalArgumentException("Restaurant not found: " + id));
 
-        restaurant.deactivate();
-        restaurantRepository.save(restaurant);
+        restaurant.goOffline();
+        return restaurantRepository.save(restaurant);
+    }
+
+    /*
+        Set restaurant as online/open
+     */
+    public Restaurant setOnline(Long id) {
+        Restaurant restaurant = searchById(id).orElseThrow(() -> new IllegalArgumentException("Restaurant not found: " + id));
+
+        restaurant.goOnline();
+        return restaurantRepository.save(restaurant);
+    }
+
+    /*
+        Toggle restaurant online/offline status
+     */
+    public Restaurant toggleStatus(Long id) {
+        Restaurant restaurant = searchById(id).orElseThrow(() -> new IllegalArgumentException("Restaurant not found: " + id));
+
+        if (restaurant.isOnline()) {
+            restaurant.goOffline();
+        } else {
+            restaurant.goOnline();
+        }
+
+        return restaurantRepository.save(restaurant);
+    }
+
+    /*
+        Check if restaurant is online
+     */
+    @Transactional(readOnly = true)
+    public boolean isRestaurantOnline(Long id) {
+        Restaurant restaurant = searchById(id).orElseThrow(() -> new IllegalArgumentException("Restaurant not found: " + id));
+        return restaurant.isOnline();
+    }
+
+    @Deprecated
+    public void deactivateRestaurant(Long id) {
+        setOffline(id);
     }
 
     @Transactional(readOnly = true)

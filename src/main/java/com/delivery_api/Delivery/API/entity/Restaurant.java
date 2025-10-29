@@ -40,7 +40,24 @@ public class Restaurant {
         }
     }
 
-    public void deactivate() {
+    public void goOffline() {
         this.active = false;
+    }
+
+    public void goOnline() {
+        this.active = true;
+    }
+
+    public boolean isOnline() {
+        return active != null && active;
+    }
+
+    public boolean isOffline() {
+        return active == null || !active;
+    }
+
+    @Deprecated
+    public void deactivate() {
+        goOffline();
     }
 }
