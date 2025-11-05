@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.deliverytech.delivery_api.dto.reports.RelatorioVendasRestaurante;
+import com.deliverytech.delivery_api.enums.StatusPedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,8 @@ public interface PedidoRepository extends JpaRepository <Pedido, Long> {
 
     // Buscar pedidos entre datas
     List<Pedido> findByDataPedidoBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
+
+    List<Pedido> findByStatus(StatusPedido status);
 
     @Query("SELECT p.restaurante.nome as restauranteNome, SUM(p.valorTotal) as totalVendas " +
             "FROM Pedido p " +
