@@ -11,7 +11,7 @@ import com.deliverytech.delivery_api.entity.Pedido;
 public interface PedidoRepository extends JpaRepository <Pedido, Long> {
 
     // Buscar pedidos por cliente ID
-    List<Pedido> findByClienteIdOrderByDataPedidoDesc(Long clienteId);
+    List<Pedido> findByClienteId(Long clienteId);
 
     // Buscar por número do pedido
     Pedido findByNumeroPedido(String numeroPedido);
@@ -19,4 +19,8 @@ public interface PedidoRepository extends JpaRepository <Pedido, Long> {
     //Buscar pedidos por restaurante ID
     List<Pedido> findByRestauranteIdOrderByDataPedidoDesc(Long restauranteId);
 
+    List<Pedido> findTop10ByOrderByDataPedidoDesc();
+
+    // Buscar pedidos entre datas
+    List<Pedido> findByDataPedidoBetween(String dataInicio, String dataFim);
 }

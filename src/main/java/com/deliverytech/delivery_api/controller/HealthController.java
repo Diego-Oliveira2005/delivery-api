@@ -24,7 +24,7 @@ public class HealthController {
         return new AppInfo(
             "Delivery Tech API",
             "1.0.0",
-            "[Seu Nome]",
+            "Diego Oliveira",
             "JDK 21",
             "Spring Boot 3.2.x"
         );

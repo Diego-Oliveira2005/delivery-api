@@ -67,7 +67,7 @@ public class PedidoService {
      */
     @Transactional(readOnly = true)
     public List<Pedido> listarPorCliente(Long clienteId) {
-        return pedidoRepository.findByClienteIdOrderByDataPedidoDesc(clienteId);
+        return pedidoRepository.findByClienteId(clienteId);
     }
 
     /**

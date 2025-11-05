@@ -20,4 +20,9 @@ public interface RestauranteRepository extends JpaRepository <Restaurante, Long>
     // Buscar por categoria
     List<Restaurante> findByCategoria(String categoria);
 
+    // Buscar por taxa menor ou igual a X
+    List<Restaurante> findByTaxaEntregaLessThanEqual(Double taxaEntrega);
+
+    //buscar por top 5 pedidos pelo nome do restaurante
+    List<Restaurante> findTop5ByOrderByNomeAsc();
 }

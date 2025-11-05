@@ -12,5 +12,14 @@ import java.util.List;
 public interface ProdutoRepository extends JpaRepository <Produto, Long> {
     // buscar produto por restaurante ID
      List<Produto> findByRestauranteId(Long restauranteId);
+
+     // buscar por disponibilidade
+     List<Produto> findByDisponivelTrue();
+
+     // buscar por categoria
+     List<Produto> findByCategoria(String categoria);
+
+     // buscar por preço menor ou igual a X
+     List<Produto> findByPrecoLessThanEqual(Double preco);
     
 }
