@@ -91,6 +91,7 @@ public class PedidoController {
      * ATIVIDADE 3.2: Adiciona ApiResponse
      */
     @GetMapping("/{id}")
+    @PreAuthorize("@pedidoService.canAccess(#id)")
     @Operation(summary = "Buscar um pedido completo pelo ID")
     public ResponseEntity<ApiResponse<PedidoResponseDTO>> buscarPorId(
             @Parameter(description = "ID do pedido", example = "501") @PathVariable Long id) {

@@ -128,6 +128,7 @@ public class ProdutoController {
      * ATIVIDADE 3.1: Modificado para retornar 204 No Content
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @produtoService.isOwner(#id)")
     @Operation(summary = "Remover um produto (exclusão física)")
     public ResponseEntity<Void> remover(
             @Parameter(description = "ID do produto") @PathVariable Long id) {
