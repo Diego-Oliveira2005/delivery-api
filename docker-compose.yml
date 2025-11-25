@@ -1,0 +1,55 @@
+services:
+  # Serviço de Banco de Dados
+  delivery-db:
+    image: mariadb:10.6
+    container_name: delivery-db
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: delivery
+      MARIADB_USER: diego
+      MARIADB_PASSWORD: 2005
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - delivery-network
+
+  # Serviço de Cache (Redis) - Necessário para a Parte 1
+  delivery-redis:
+    image: redis:alpine
+    container_name: delivery-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - delivery-network
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Sua API Spring Boot
+  delivery-api:
+    build: .
+    container_name: delivery-api
+    depends_on:
+      - delivery-db
+      - delivery-redis
+    environment:
+      # Sobrescreve as configurações do application.properties para usar os nomes dos containers
+      SPRING_DATASOURCE_URL: jdbc:mariadb://delivery-db:3306/delivery
+      SPRING_DATASOURCE_USERNAME: diego
+      SPRING_DATASOURCE_PASSWORD: 2005
+      REDIS_HOST: delivery-redis # Usa a variável que configuramos no passo anterior
+    ports:
+      - "8080:8080"
+    networks:
+      - delivery-network
+
+volumes:
+  db_data:
+
+networks:
+  delivery-network:
+    driver: bridge
